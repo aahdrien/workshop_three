@@ -1,0 +1,14 @@
+@import "compass/reset";
+@import "compass/css3";
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    overflow: hidden;
+    background-color: #262626;
+}
