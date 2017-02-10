@@ -18,7 +18,7 @@ export default class Scene {
     this.light.position.set(0, 0, 100);
     this.scene.add(this.light);
 
-    document.body.appendChild(this.renderer.domElement);
+    document.getElementById('three-container').appendChild(this.renderer.domElement);
   }
 
   add(element) {

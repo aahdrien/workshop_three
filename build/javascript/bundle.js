@@ -32,7 +32,7 @@ var Scene = (function () {
     this.light.position.set(0, 0, 100);
     this.scene.add(this.light);
 
-    document.body.appendChild(this.renderer.domElement);
+    document.getElementById('three-container').appendChild(this.renderer.domElement);
   }
 
   Scene.prototype.add = function add(element) {
@@ -76,11 +76,15 @@ var Sphere = (function () {
 
     var phongShader = THREE.ShaderLib['phong'];
 
+    this.frequency = 0.04;
+    this.color = [rgbColor.r, rgbColor.g, rgbColor.b];
+    this.speed = 3000;
+
     this.uniforms = THREE.UniformsUtils.merge([phongShader.uniforms, {
-      color_rgb: { type: 'vec3', value: new THREE.Vector3(rgbColor.r / 255, rgbColor.g / 255, rgbColor.b / 255) },
+      color_rgb: { type: 'vec3', value: new THREE.Vector3(this.color[0] / 255, this.color[1] / 255, this.color[2] / 255) },
       color_break_values: { type: 'vec2', value: new THREE.Vector2(colorBreakValues.min, colorBreakValues.max) },
       u_amplitude: { type: '1f', value: 10 },
-      u_frequency: { type: '1f', value: 0.04 },
+      u_frequency: { type: '1f', value: this.frequency },
       u_time: { type: '1f', value: 0 }
     }]);
 
@@ -91,7 +95,6 @@ var Sphere = (function () {
       side: THREE.DoubleSide,
       transparent: true,
       lights: true,
-      shininess: 50,
       wireframe: false
     });
 
@@ -99,7 +102,9 @@ var Sphere = (function () {
   }
 
   Sphere.prototype.update = function update(dt) {
-    this.uniforms.u_time.value += dt / 3000;
+    this.uniforms.u_time.value += dt / this.speed;
+    this.uniforms.u_frequency.value = this.frequency;
+    this.uniforms.color_rgb.value = new THREE.Vector3(this.color[0] / 255, this.color[1] / 255, this.color[2] / 255);
   };
 
   Sphere.prototype.getThreeObject = function getThreeObject() {
@@ -152,6 +157,22 @@ var scene = new _componentsScene2['default'](window.innerWidth, window.innerHeig
 var sphere = initSphere(scene, 16, 256, 256, { r: 33, g: 166, b: 173 }, { min: -0.5, max: 0.2 });
 var sphere2 = initSphere(scene, 18, 256, 256, { r: 242, g: 64, b: 58 }, { min: 0.2, max: 0.4 });
 var sphere3 = initSphere(scene, 20, 256, 256, { r: 253, g: 172, b: 18 }, { min: 0.4, max: 1.0 });
+
+var datGUI = new dat.GUI();
+var guiSphereFolder = datGUI.addFolder('Small Sphere');
+guiSphereFolder.add(sphere, 'frequency', 0.001, 0.5);
+guiSphereFolder.addColor(sphere, 'color');
+guiSphereFolder.add(sphere, 'speed', 500, 5000);
+
+var guiSphere2Folder = datGUI.addFolder('Medium Sphere');
+guiSphere2Folder.add(sphere2, 'frequency', 0.001, 0.5);
+guiSphere2Folder.addColor(sphere2, 'color');
+guiSphere2Folder.add(sphere2, 'speed', 500, 5000);
+
+var guiSphere3Folder = datGUI.addFolder('Big Sphere');
+guiSphere3Folder.add(sphere3, 'frequency', 0.001, 0.5);
+guiSphere3Folder.addColor(sphere3, 'color');
+guiSphere3Folder.add(sphere3, 'speed', 500, 5000);
 
 render();
 

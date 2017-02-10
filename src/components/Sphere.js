@@ -10,13 +10,17 @@ export default class Sphere {
 
     const phongShader = THREE.ShaderLib['phong'];
 
+    this.frequency = 0.04;
+    this.color = [rgbColor.r, rgbColor.g, rgbColor.b];
+    this.speed = 3000;
+
     this.uniforms = THREE.UniformsUtils.merge([
       phongShader.uniforms,
       {
-        color_rgb: {type: 'vec3', value: new THREE.Vector3(rgbColor.r / 255, rgbColor.g / 255, rgbColor.b / 255)},
+        color_rgb: {type: 'vec3', value: new THREE.Vector3(this.color[0] / 255, this.color[1] / 255, this.color[2] / 255)},
         color_break_values: {type: 'vec2', value: new THREE.Vector2(colorBreakValues.min, colorBreakValues.max)},
         u_amplitude: {type: '1f', value: 10},
-        u_frequency: {type: '1f', value: 0.04},
+        u_frequency: {type: '1f', value: this.frequency},
         u_time: {type: '1f', value: 0}
       }
     ]);
@@ -28,7 +32,6 @@ export default class Sphere {
       side: THREE.DoubleSide,
       transparent: true,
       lights: true,
-      shininess: 50,
       wireframe: false,
     });
 
@@ -36,7 +39,9 @@ export default class Sphere {
   }
 
   update(dt) {
-    this.uniforms.u_time.value += dt / 3000;
+    this.uniforms.u_time.value += dt / this.speed;
+    this.uniforms.u_frequency.value = this.frequency;
+    this.uniforms.color_rgb.value = new THREE.Vector3(this.color[0] / 255, this.color[1] / 255, this.color[2] / 255);
   }
 
   getThreeObject() {
